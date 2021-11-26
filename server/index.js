@@ -15,7 +15,7 @@ io.of("/radar").on("connection", () => {
       bearing: Math.round(Math.random() * 360),
     }));
     io.of("/radar").emit("data", data);
-  }, 160);
+  }, 16);
 });
 
 server.listen(5000, () => {
