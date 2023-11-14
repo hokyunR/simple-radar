@@ -1,0 +1,49 @@
+name: Create a new release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: 📑 Retrieve version information
+        id: set_information
+        run: |
+          version=$(echo '${{ github.event.head_commit.message }}' | egrep -o "v?[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+|$)")
+
+          if [[ $version =~ -rc ]]; then
+            prerelease=true
+          else
+            prerelease=false
+          fi
+
+          echo "version=${version}" >> $GITHUB_OUTPUT
+          echo "prerelease=${prerelease}" >> $GITHUB_OUTPUT
+
+      - name: ⛵️ Create a new pre-release
+        if: ${{ steps.set_information.outputs.prerelease == 'true' }}
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ steps.set_information.outputs.version }}
+          tag: ${{ steps.set_information.outputs.version }}
+          prerelease: true
+          generateReleaseNotes: true
+
+      - name: 🚢 Create a new release
+        if: ${{ steps.set_information.outputs.prerelease == 'false' }}
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ steps.set_information.outputs.version }}
+          tag: ${{ steps.set_information.outputs.version }}
+          generateReleaseNotes: true
