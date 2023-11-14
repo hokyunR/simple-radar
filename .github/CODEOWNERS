@@ -1,0 +1,11 @@
+# All rules apply to the main branch only
+
+# Rule for leaders
+
+- @leader
+
+# Rules for security
+
+/.github/workflows/release.yml @bot
+/.github/workflows/deployment.yml @bot @leader
+/.github/CODEOWNERS @security
