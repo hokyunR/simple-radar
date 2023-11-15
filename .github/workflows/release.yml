@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - releases/**
+      - 'releases/**'
 
 jobs:
   pre-release:
